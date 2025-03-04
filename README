@@ -1,0 +1,9 @@
+DjVu-Nix
+========
+A collection of DjVu-related software for Nix.
+
+gsdjvu
+ocrodjvu
+pdftotree
+hocr2djvused
+
