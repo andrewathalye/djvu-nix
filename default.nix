@@ -5,4 +5,4 @@ rec {
   hocr2djvused = callPackage ./hocr2djvused {};
   ocrodjvu = callPackage ./ocrodjvu {};
   pdftotree = callPackage ./pdftotree {};
-};
+}
