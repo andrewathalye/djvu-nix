@@ -27,6 +27,7 @@ then
 fi
 
 # Temporary directory
+REALINPATH="$(realpath $1)"
 REALOUTPATH="$(realpath $2)"
 TMPDIR="$(mktemp -d)"
 cd "$TMPDIR"
@@ -38,7 +39,7 @@ cleanup() {
 }
 
 # Convert to DjVu
-ln -s "$1" in.pdf || cleanup -1
+ln -s "$REALINPATH" in.pdf || cleanup -1
 djvudigital --dpi=$DPI in.pdf out.djvu  || cleanup -1
 rm in.pdf || cleanup -1
 
