@@ -1,0 +1,58 @@
+#!/bin/sh
+# Note: replace @SHARE_DIR@ with the directory that contains alto_to_djvu.xml
+usage() {
+   echo "Usage: $0 [-d dpi] pdf_input djvu_output"
+   echo "Default DPI is 150"
+   exit -1
+}
+
+# Options
+DPI=150
+while getopts "d:" o
+do
+    case "${o}" in
+        d)
+            DPI=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [[ "$#" -ne 2 ]]
+then
+   usage
+fi
+
+# Temporary directory
+REALOUTPATH="$(realpath $2)"
+TMPDIR="$(mktemp -d)"
+cd "$TMPDIR"
+
+cleanup() {
+   cd ..
+   rm -r "$TMPDIR"
+   exit $1
+}
+
+# Convert to DjVu
+ln -s "$1" in.pdf || cleanup -1
+djvudigital --dpi=$DPI in.pdf out.djvu  || cleanup -1
+rm in.pdf || cleanup -1
+
+# Extract text from PDF
+if ! pdfalto -noImage -annotation "$1" in.xml
+then
+   echo "Failed to extract links from PDF! Extracting just text" 1>&2
+   pdfalto -noImage "$1" in.xml || cleanup - 1
+fi
+xsltproc --stringparam annotfile "$PWD"/in_annot.xml @SHARE_DIR@/alto_to_djvu.xml in.xml > out.xml || cleanup -1
+
+# Add text to DjVu
+djvuxmlparser -o out.djvu out.xml || cleanup -1
+
+# Clean up
+mv out.djvu "$REALOUTPATH"
+cleanup 0

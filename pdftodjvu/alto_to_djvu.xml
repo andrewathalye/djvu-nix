@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- To use this, you must set annotfile to a file containing annotations from pdfalto -->
+<!-- Otherwise no hyperlinks will be generated. All other data can be from the alto file -->
+
+<xsl:stylesheet version="1.0"
+   xmlns:al="http://www.loc.gov/standards/alto/ns-v3#"
+   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:output encoding="UTF-8"/>
+
+<xsl:param name="annotfile"/>
+<xsl:variable name="annots" select="document($annotfile)/ANNOTATIONS"/>
+
+<xsl:variable name="filename" select="/al:alto/al:Description/al:sourceImageInformation/al:fileName"/>
+
+<xsl:template match="al:alto">
+   <xsl:text disable-output-escaping="yes">
+      &lt;!DOCTYPE DJVuXML PUBLIC "-//W3C//DTD DjVuXML 1.1//EN" "pubtext/DjVuXML-s.dtd"&gt;
+   </xsl:text>
+
+   <DJVuXML>
+      <HEAD>
+         <xsl:value-of select="$filename"/>
+      </HEAD>
+
+      <BODY>
+         <xsl:apply-templates select="al:Layout"/>
+      </BODY>
+   </DJVuXML>
+</xsl:template>
+
+<xsl:template match="al:Layout">
+   <xsl:for-each select="al:Page">
+      <xsl:variable name="page_number" select="./@PHYSICAL_IMG_NR"/>
+
+      <!-- Page id is pXXXX.djvu if multipage, blank otherwise -->
+      <xsl:variable name="page_id">
+         <xsl:choose>
+            <xsl:when test="count(/al:alto/al:Layout/al:Page) > 1">
+               <xsl:variable name="padded_page_id" select="concat ('0000', $page_number)"/>
+               <xsl:value-of select="concat ('p', substring ($padded_page_id, string-length ($padded_page_id) - 3), '.djvu')"/>
+            </xsl:when>
+            <xsl:otherwise>
+            </xsl:otherwise>
+         </xsl:choose>
+      </xsl:variable>
+
+      <!-- Primary pagedata -->
+      <OBJECT data="" type="image/x.djvu" height="" width="" usemap="">
+         <xsl:attribute name="data">
+            <xsl:value-of select="$filename"/>
+         </xsl:attribute>
+
+         <xsl:attribute name="height">
+            <xsl:value-of select="round(./@HEIGHT)"/>
+         </xsl:attribute>
+
+         <xsl:attribute name="width">
+            <xsl:value-of select="round(./@WIDTH)"/>
+         </xsl:attribute>
+
+         <xsl:attribute name="usemap">
+            <xsl:value-of select="$page_id"/>
+         </xsl:attribute>
+
+         <PARAM name="PAGE" value="">
+            <xsl:attribute name="value">
+               <xsl:value-of select="$page_id"/>
+            </xsl:attribute>
+         </PARAM>
+
+         <!-- Text data -->
+         <HIDDENTEXT>
+            <PAGECOLUMN>
+               <REGION>
+                  <xsl:for-each select="./al:PrintSpace/al:TextBlock">
+                     <PARAGRAPH>
+                        <xsl:for-each select="./al:TextLine">
+                           <LINE>
+                              <xsl:for-each select="./al:String">
+                                 <WORD coords="">
+                                    <xsl:variable name="whpos1" select="round(./@HPOS)"/>
+
+                                    <!-- Ensure hpos2 is not equal to hpos1 -->
+                                    <xsl:variable name="whpos2">
+                                       <xsl:variable name="whpos2_inner" select="$whpos1 + round(./@WIDTH)"/>
+                                       <xsl:choose>
+                                          <xsl:when test="$whpos1 = $whpos2_inner">
+                                             <xsl:value-of select="$whpos1 + 1"/>
+                                          </xsl:when>
+                                          <xsl:otherwise>
+                                             <xsl:value-of select="$whpos2_inner"/>
+                                          </xsl:otherwise>
+                                       </xsl:choose>
+                                    </xsl:variable>
+
+                                    <xsl:variable name="wvpos1" select="round(./@VPOS)"/>
+                                    <xsl:variable name="wvpos2" select="$wvpos1 + round(./@HEIGHT)"/>
+
+                                    <xsl:attribute name="coords">
+                                       <xsl:value-of select="concat($whpos1, ',', $wvpos1, ',', $whpos2, ',', $wvpos2)"/>
+                                    </xsl:attribute>
+
+                                    <xsl:value-of select="./@CONTENT"/>
+                                 </WORD>
+                              </xsl:for-each>
+                           </LINE>
+                        </xsl:for-each>
+                     </PARAGRAPH>
+                  </xsl:for-each>
+               </REGION>
+            </PAGECOLUMN>
+         </HIDDENTEXT>
+      </OBJECT>
+
+      <!-- Convert links too -->
+      <MAP name="">
+         <xsl:attribute name="name">
+            <xsl:value-of select="$page_id"/>
+         </xsl:attribute>
+
+         <xsl:for-each select="$annots/ANNOTATION[@pagenum = $page_number]">
+            <xsl:if test="./@subtype = 'Link'">
+               <xsl:if test="(./ACTION/@type = 'goto') or (./ACTION/@type = 'uri')">
+                  <AREA coords="" href="" alt="">
+                     <xsl:attribute name="coords">
+                        <xsl:variable name="ahpos1" select="round(./QUADPOINTS/QUADRILATERAL/POINT[1]/@HPOS)"/>
+                        <xsl:variable name="avpos1" select="round(./QUADPOINTS/QUADRILATERAL/POINT[1]/@VPOS)"/>
+
+                        <!-- Ensure that hpos2 is not equal to hpos1 -->
+                        <xsl:variable name="ahpos2">
+                           <xsl:variable name="ahpos2_inner" select="round(./QUADPOINTS/QUADRILATERAL/POINT[4]/@HPOS)"/>
+                           <xsl:choose>
+                              <xsl:when test="$ahpos1 = $ahpos2_inner">
+                                 <xsl:value-of select="$ahpos1 + 1"/>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                 <xsl:value-of select="$ahpos2_inner"/>
+                              </xsl:otherwise>
+                           </xsl:choose>
+                        </xsl:variable>
+
+                        <xsl:variable name="avpos2" select="round(./QUADPOINTS/QUADRILATERAL/POINT[4]/@VPOS)"/>
+
+                        <xsl:value-of select="concat ($ahpos1, ',', $avpos1, ',', $ahpos2, ',', $avpos2)"/>
+                     </xsl:attribute>
+
+                     <xsl:attribute name="href">
+                        <xsl:choose>
+                           <xsl:when test="./ACTION/@type = 'goto'">
+                              <xsl:value-of select="concat('#',./ACTION/DEST/@page)"/>
+                           </xsl:when>
+                           <xsl:when test="./ACTION/@type = 'uri'">
+                              <xsl:value-of select="./ACTION/DEST"/>
+                           </xsl:when>
+                        </xsl:choose>
+                     </xsl:attribute>
+                  </AREA>
+               </xsl:if>
+            </xsl:if>
+         </xsl:for-each>
+      </MAP>
+   </xsl:for-each>
+
+</xsl:template>
+
+</xsl:stylesheet>
