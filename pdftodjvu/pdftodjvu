@@ -27,8 +27,8 @@ then
 fi
 
 # Temporary directory
-REALINPATH="$(realpath $1)"
-REALOUTPATH="$(realpath $2)"
+REALINPATH="$(realpath "$1")"
+REALOUTPATH="$(realpath "$2")"
 TMPDIR="$(mktemp -d)"
 cd "$TMPDIR"
 
