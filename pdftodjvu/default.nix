@@ -28,8 +28,7 @@ stdenv.mkDerivation rec {
     sed -i "s#@SHARE_DIR@#$out/share#g" $out/bin/pdftodjvu
 
     wrapProgram $out/bin/pdftodjvu \
-      --prefix PATH : ${lib.makeBinPath [ gsdjvu djvulibre pdfalto libxslt ]} \
-      --set SHARE_DIR : $out/share
+      --prefix PATH : ${lib.makeBinPath [ gsdjvu djvulibre pdfalto libxslt ]}
   '';
 
 }
