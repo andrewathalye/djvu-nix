@@ -8,7 +8,7 @@
 }:
 stdenv.mkDerivation rec {
   pname = "pdftodjvu";
-  version = "0.1";
+  version = "0.2";
 
   nativeBuildInputs = [ makeWrapper ];
   buildInputs = [ gsdjvu djvulibre pdfalto libxslt ];
@@ -28,7 +28,8 @@ stdenv.mkDerivation rec {
     sed -i "s#@SHARE_DIR@#$out/share#g" $out/bin/pdftodjvu
 
     wrapProgram $out/bin/pdftodjvu \
-      --prefix PATH : ${lib.makeBinPath [ gsdjvu djvulibre pdfalto libxslt ]}
+      --prefix PATH : ${lib.makeBinPath [ gsdjvu djvulibre pdfalto libxslt ]} \
+      --set SHARE_DIR : $out/share
   '';
 
 }
