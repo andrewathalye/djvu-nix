@@ -8,7 +8,7 @@
 }:
 stdenv.mkDerivation rec {
   pname = "pdftodjvu";
-  version = "0.2";
+  version = "0.3";
 
   nativeBuildInputs = [ makeWrapper ];
   buildInputs = [ gsdjvu djvulibre pdfalto libxslt ];

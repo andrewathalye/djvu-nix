@@ -4,19 +4,24 @@
 SHARE_DIR='@SHARE_DIR@'
 
 usage() {
-   echo "Usage: $0 [-d dpi] pdf_input djvu_output"
-   echo "-d: takes a value greater than 75. The default is 300."
+   echo "Usage: $0 [-d dpi] [-f fg_image_colors] pdf_input djvu_output"
+   echo "-d: takes a value in the range 20-1200. The default is 600."
+   echo "-f: takes a value in the range 1-4000. The default is 256."
    exit -1
 }
 
 # Options
-DPI=300
-while getopts "d:" o
+DPI=600
+FGIMGCOLORS=256
+while getopts "d: f:" o
 do
     case "${o}" in
         d)
             DPI=${OPTARG}
             ;;
+        f)
+           FGIMGCOLORS=${OPTARG}
+           ;;
         *)
             usage
             ;;
@@ -43,7 +48,7 @@ cleanup() {
 
 # Convert to DjVu
 ln -s "$REALINPATH" in.pdf || cleanup -1
-djvudigital --dpi=$DPI in.pdf out.djvu  || cleanup -1
+djvudigital --dpi=$DPI --fg-image-colors=$FGIMGCOLORS in.pdf out.djvu  || cleanup -1
 rm in.pdf || cleanup -1
 
 # Extract text from PDF
