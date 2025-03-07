@@ -47,11 +47,7 @@ djvudigital --dpi=$DPI in.pdf out.djvu  || cleanup -1
 rm in.pdf || cleanup -1
 
 # Extract text from PDF
-if ! pdfalto -noImage -annotation "$REALINPATH" in.xml
-then
-   echo "Failed to extract links from PDF! Extracting just text" 1>&2
-   pdfalto -noImage "$REALINPATH" in.xml || cleanup -1
-fi
+pdfalto -noImage -annotation "$REALINPATH" in.xml || cleanup -1
 xsltproc --stringparam annotfile "$PWD"/in_annot.xml "$SHARE_DIR"/alto_to_djvu.xml in.xml > out.xml || cleanup -1
 
 # Add text to DjVu

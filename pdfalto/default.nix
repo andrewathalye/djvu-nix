@@ -9,7 +9,7 @@
 }:
 stdenv.mkDerivation {
   pname = "pdfalto";
-  version = "0.4";
+  version = "0.4-202401231-git";
 
   nativeBuildInputs = [
     cmake
@@ -26,8 +26,8 @@ stdenv.mkDerivation {
 
   src = builtins.fetchGit {
     url = "https://www.github.com/kermitt2/pdfalto.git";
-    ref = "refs/tags/0.4";
-    rev = "2ef1c4a516b787b981e2724c8143f67b6f776f17";
+    ref = "master";
+    rev = "85b3938cfece8b193f6d18aab97abed596d3e8af";
     submodules = true;
   };
 
