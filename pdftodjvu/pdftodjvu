@@ -2,12 +2,12 @@
 # Note: replace @SHARE_DIR@ with the directory that contains alto_to_djvu.xml
 usage() {
    echo "Usage: $0 [-d dpi] pdf_input djvu_output"
-   echo "Default DPI is 150"
+   echo "-d: takes a value greater than 75. The default is 300."
    exit -1
 }
 
 # Options
-DPI=150
+DPI=300
 while getopts "d:" o
 do
     case "${o}" in
