@@ -4,15 +4,15 @@ A collection of DjVu-related software for Nix.
 
 Recommended:
 -- pdftodjvu
--- gsdjvu *
+-- gsdjvu \*\*
 -- ocrodjvu
 
-* gsdjvu is license-incompatible with GhostScript. It must be built
-from source and cannot subsequently be distributed in binary form.
-
-Still Useful:
--- pdftotree
+Others:
 -- hocr2djvused
+-- pdftotree
+
+\*\***gsdjvu is license-incompatible with GhostScript. It must be built
+from source and cannot subsequently be distributed in binary form.**
 
 pdftodjvu
 ---------
@@ -28,5 +28,6 @@ with languages other than English, while pdftodjvu does not generally have issue
 
 KNOWN ISSUES:
 -- Requires accurate PDF fonts to determine bounds correctly
--- Can incorrectly deduce bounding boxes for some highly-complex scripts or formats.
+-- Can occasionally miss some words in long or complex documents.
 > This is an upstream pdfalto bug, reported [here](https://github.com/kermitt2/pdfalto/issues/192)
+-- Does not manually generate a new outline, djvudigital may truncate chapter names
