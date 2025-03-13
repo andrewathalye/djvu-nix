@@ -3,13 +3,17 @@ DjVu-Nix
 A collection of DjVu-related software for Nix.
 
 Recommended:
--- pdftodjvu
+-- pdftodjvu \*
 -- gsdjvu \*\*
 -- ocrodjvu
+-- depress \*
 
 Others:
 -- hocr2djvused
 -- pdftotree
+
+\* pdftodjvu is a custom utility, see below
+\* depress batch-converts pnm files to djvu and is quite good at it :)
 
 \*\***gsdjvu is license-incompatible with GhostScript. It must be built
 from source and cannot subsequently be distributed in binary form.**

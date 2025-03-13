@@ -7,4 +7,5 @@ rec {
   pdftotree = callPackage ./pdftotree {};
   pdfalto = callPackage ./pdfalto {};
   pdftodjvu = callPackage ./pdftodjvu { gsdjvu = gsdjvu; pdfalto = pdfalto; };
+  depress = callPackage ./depress {};
 }
