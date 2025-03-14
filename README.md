@@ -15,8 +15,13 @@ Others:
 \* pdftodjvu is a custom utility, see below
 \* depress batch-converts pnm files to djvu and is quite good at it :)
 
-\*\***gsdjvu is license-incompatible with GhostScript. It must be built
+\*\***gsdjvu is license-incompatible with Ghostscript. It must be built
 from source and cannot subsequently be distributed in binary form.**
+
+**Additionally, gsdjvu uses an old version of Ghostscript that is KNOWN
+to be vulnerable to bugs, including ghostinthepdf. pdftodjvu and djvudigital
+use switches to minimise security risks for PDF files, but it is in general
+not safe to use untrusted Postscript as input.**
 
 pdftodjvu
 ---------
@@ -26,9 +31,8 @@ A custom tool I wrote to convert PDF to DjVu and retain hyperlinks and text.
 It uses pdfalto, djvudigital, and custom XSLT to generate DjVu files with
 text data and hyperlinks.
 
-pdf2djvu is slower and produces larger files, but is somewhat more stable.
-Use it instead if file size is not a concern. Note also that pdf2djvu can struggle
-with languages other than English, while pdftodjvu does not generally have issues.
+By comparison, pdf2djvu is slower and produces larger files. It is likely
+safer from a security standpoint, but struggles to extract non-English text.
 
 KNOWN ISSUES:
 -- Requires accurate PDF fonts to determine bounds correctly
