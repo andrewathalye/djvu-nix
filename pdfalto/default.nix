@@ -9,7 +9,7 @@
 }:
 stdenv.mkDerivation {
   pname = "pdfalto";
-  version = "0.4-202401231-git";
+  version = "0.5-20250505-git";
 
   nativeBuildInputs = [
     cmake
@@ -27,11 +27,15 @@ stdenv.mkDerivation {
   src = builtins.fetchGit {
     url = "https://www.github.com/kermitt2/pdfalto.git";
     ref = "master";
-    rev = "85b3938cfece8b193f6d18aab97abed596d3e8af";
+    rev = "8cf749a01e543f9ecb6cae30a9d11778d7c2896b";
     submodules = true;
   };
 
   enableParallelBuilding = true;
+
+  postConfigure = ''
+    cp xpdf-*/aconf.h ../xpdf-*/
+  '';
 
   installPhase = ''
     mkdir -p "$out/bin"
