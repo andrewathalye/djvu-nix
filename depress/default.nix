@@ -6,7 +6,7 @@
 }:
 stdenv.mkDerivation rec {
   pname = "depress";
-  version = "1.8";
+  version = "1.8.1";
 
   nativeBuildInputs = [
     makeWrapper
@@ -18,8 +18,8 @@ stdenv.mkDerivation rec {
 
   src = builtins.fetchGit {
     url = "https://github.com/plzombie/depress.git";
-    ref = "refs/tags/v1.8";
-    rev = "a6144b2c6a4570e9b551d34532764ebf6f981c9e";
+    ref = "refs/tags/v1.8.1";
+    rev = "c49b7a711a7525c7c872e692eb58b99ef429bc97";
   };
 
   configurePhase = ''
